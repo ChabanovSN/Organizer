@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>border.jpg</file>
+        <file>task.jpg</file>
+    </qresource>
+</RCC>
