@@ -36,6 +36,11 @@ private:
             color:#CD0E6B;\
     font-size: 12pt;\
     font-weight: bold;";
-
+    const char * settingR = "text-align: center;\
+             background: RGB(249, 201, 16);\
+            color:blue;\
+    font-size: 12pt;\
+    font-weight: bold;";
+    QMessageBox * msg;
 };
 #endif // MAINWINDOW_H

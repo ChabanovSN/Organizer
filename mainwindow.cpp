@@ -8,7 +8,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     setWindowTitle(QString::fromUtf8("Органайзер"));
 
-   setStyleSheet("border-image: url(:/border.jpg);");
+    setStyleSheet("border-image: url(:/border.jpg);");
+     msg = new QMessageBox(this);
+     msg->setStyleSheet(setting);
     lstWgt = new QListWidget;
     QLayout* l = new QVBoxLayout;
 
@@ -25,10 +27,13 @@ MainWindow::MainWindow(QWidget *parent)
     resize(530, 500 );
 }
 void MainWindow::newRecord(){
-    if(listTasks.size()>=100)
-        QMessageBox::information( this, QString::fromUtf8("Внимание"),
-                                  QString::fromUtf8("Количество записей 100, удалите ненужные"));
-    else{
+    if(listTasks.size()>=2){
+        msg->setWindowTitle(QString::fromUtf8("Внимание"));
+        msg->setText(QString::fromUtf8("Количество записей 100, удалите ненужные"));
+        msg->show();
+//        msg->information( this, QString::fromUtf8("Внимание"),
+//                                  QString::fromUtf8("Количество записей 100, удалите ненужные"));
+    }else{
         QDateTime d = QDateTime::currentDateTime();
         taskWindow.setTask(new Task(101,"","",d));
         taskWindow.show();
@@ -41,7 +46,7 @@ void MainWindow::getNewList(){
     listTasks.clear();
     listTasks= utils.readFile();
     sort(listTasks.begin(), listTasks.end(),
-          [](Task* a, Task* b) -> bool { return a->getDateTime() < b->getDateTime(); });
+         [](Task* a, Task* b) -> bool { return a->getDateTime() < b->getDateTime(); });
 
     int i=1;
     foreach(  Task * task, listTasks){
@@ -61,14 +66,25 @@ void MainWindow::makeItem(int i, Task * task,QListWidget* lstWgt) {
 
     QLabel *num = new QLabel(name);
     num->setFixedSize(QSize(180, 25));
-    num->setStyleSheet(setting);
+
     QPushButton* btn1 = new QPushButton(QString::fromStdString(task->getName()));
     btn1->setFixedSize(QSize(250, 25));
-    btn1-> setStyleSheet(setting);
+
     QPushButton* btn2 = new QPushButton(QString::fromUtf8("X"));
 
+    if(task->getDateTime()<=QDateTime::currentDateTime()){
+        num->setStyleSheet(settingR);
+        btn1-> setStyleSheet(settingR);
+        btn2-> setStyleSheet(settingR);
+    }else{
+        num->setStyleSheet(setting);
+        btn1-> setStyleSheet(setting);
+        btn2-> setStyleSheet(setting);
+    }
+
+
     btn2->setFixedSize(QSize(40, 25));
-    btn2-> setStyleSheet(setting);
+
     connect( btn1, SIGNAL( clicked() ), SLOT( onBtnClicked() ) );
     connect( btn2, SIGNAL( clicked() ), SLOT( onBtnClickedDel() ) );
     l->addWidget( id);
@@ -108,10 +124,10 @@ void MainWindow:: onBtnClickedDel(){
     }
 }
 MainWindow::~MainWindow()
-{
-   delete tb ;
-   delete lstWgt;
-   foreach(Task* t,listTasks) delete t;
+{   delete msg;
+    delete tb ;
+    delete lstWgt;
+    foreach(Task* t,listTasks) delete t;
 
 }
 
